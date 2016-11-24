@@ -19,6 +19,7 @@ def transform(x_original):
     global b
     w1_T=np.transpose(w1)
     Xtrans=np.dot(x_original,w1_T)
+    Xtrans+=b
     Xtrans=np.cos(Xtrans)
     Xtrans*= np.sqrt(2.) / np.sqrt(mDim)
     
