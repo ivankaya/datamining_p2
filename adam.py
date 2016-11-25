@@ -1,5 +1,5 @@
 import numpy as np
-import time
+#import time
 
 #Parameters that can be tuned:
 mDim=1000#number of dimensions in data
@@ -20,12 +20,8 @@ def transform(x_original):
     global b
     global gamma
     global mDim
-    start = time.clock()
-    w1_T=np.transpose(w1)
     Xtrans=np.dot(gamma*x_original,np.reshape(w1, (400, mDim)))
-    Xtrans = np.concatenate((np.cos(Xtrans+np.reshape(b, (1, mDim))),np.cos(-Xtrans+np.reshape(b, (1, mDim)))),axis = 1)
-    Xtrans*= np.sqrt(2.) / np.sqrt(mDim)
-    print('Time elapsed for mapper: ', time.clock()-start)
+    Xtrans = (np.sqrt(2.0) / np.sqrt(mDim))*np.concatenate((np.cos(Xtrans+np.reshape(b, (1, mDim))),np.cos(-Xtrans+np.reshape(b, (1, mDim)))),axis = 1)
     return Xtrans
 
 def mapper(key, value):
@@ -35,7 +31,7 @@ def mapper(key, value):
     global alpha
     global beta_1
     global beta_2
-    start = time.clock()
+    #start = time.clock()
     # key: None
     # value: one line of input file
     weights = np.zeros([mDim], dtype='float') #maybe adjust this
@@ -45,7 +41,7 @@ def mapper(key, value):
     v_hat = np.zeros([mDim], dtype='float')
     counter = 0.0
     #print('Mapping...')
-    start = time.clock()
+    #start = time.clock()
     dat = np.zeros([len(value),401], dtype='f')
     count = 0
     for i in value:
@@ -87,20 +83,18 @@ def mapper(key, value):
                 m_hat = m / (1.0 - beta_1**(lam*counter))
                 v_hat = v / (1.0 - beta_2**(lam*counter))
                 weights = weights - np.divide((alpha*m_hat), (np.sqrt(v_hat) + epsilon))
-
-    #print('Time elapsed for mapper: ', time.clock()-start)
     yield 1,weights
 
 
 def reducer(key, values):
     # key: key from mapper used to aggregate
     # values: list of all value for that key
-    start = time.clock()
+    #start = time.clock()
     weights_final = 0.0
     num_weights = 0.0
     for i in values:
         weights_final = weights_final + i
         num_weights = num_weights + 1.0
     #print num_weights
-    print 'Time elapsed for reducer: ', time.clock()-start                              
+    #print 'Time elapsed for reducer: ', time.clock()-start                              
     yield weights_final/num_weights
