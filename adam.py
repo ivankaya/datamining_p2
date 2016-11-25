@@ -2,10 +2,10 @@ import numpy as np
 #import time
 
 #Parameters that can be tuned:
-mDim=1000#number of dimensions in data
-gamma = 1 #the sqrt of the regular gamma of regular rbf
+mDim=400#number of dimensions in data
+gamma = 9.25 #the sqrt of the regular gamma of regular rbf
 epsilon = 0.000001 #small tweak number
-lam = 1 #parameter to tune the power within each iteration in mapper
+lam = 1.0 #parameter to tune the power within each iteration in mapper
 kk = 2 #number of iterations for convergence
 alpha = 0.003 #alpha parameter for adam
 beta_1 = 0.9 # beta1 param for adam
@@ -34,11 +34,11 @@ def mapper(key, value):
     #start = time.clock()
     # key: None
     # value: one line of input file
-    weights = np.zeros([2*mDim], dtype='float') #maybe adjust this
-    m = np.zeros([2*mDim], dtype='float')
-    v = np.zeros([2*mDim], dtype='float')
-    m_hat = np.zeros([2*mDim], dtype='float')
-    v_hat = np.zeros([2*mDim], dtype='float')
+    weights = np.zeros([mDim], dtype='float') #maybe adjust this
+    m = np.zeros([mDim], dtype='float')
+    v = np.zeros([mDim], dtype='float')
+    m_hat = np.zeros([mDim], dtype='float')
+    v_hat = np.zeros([mDim], dtype='float')
     counter = 0.0
     #print('Mapping...')
     #start = time.clock()
@@ -62,14 +62,12 @@ def mapper(key, value):
     #print('Transforming...')
     x = transform(kaki)
     #print x[0, 0:10]
-    randindex = np.random.permutation(np.shape(x)[0])
-    for i in range(kk):
-        randindex = np.concatenate((randindex,np.random.permutation(np.shape(x)[0])),axis=0)
-    #print('Fitting...')
     for j in range(kk):
+        randindex = np.random.permutation(np.shape(x)[0])
         for i in range(x.shape[0]):
             counter = counter + 1.0
-            rand = randindex[int(counter)-1]
+            rand = randindex[i]
+            #print(np.shape(x[rand]))
             L = np.dot(weights,x[rand])
             if (y[rand]*L <=0):
                 m = beta_1 * m - (1.0 - beta_1)*y[rand]*x[rand]
@@ -80,9 +78,10 @@ def mapper(key, value):
             else:
                 m = beta_1 * m
                 v = beta_2 * v
-                m_hat = m / (1.0 - beta_1**(lam*counter))
-                v_hat = v / (1.0 - beta_2**(lam*counter))
-                weights = weights - np.divide((alpha*m_hat), (np.sqrt(v_hat) + epsilon))
+            m_hat = m / (1.0 - beta_1**(lam*counter))
+            v_hat = v / (1.0 - beta_2**(lam*counter))
+            weights = weights - np.divide((alpha*m_hat), (np.sqrt(v_hat) + epsilon))
+    print('fin')
     yield 1,weights
 
 
