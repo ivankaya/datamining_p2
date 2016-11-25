@@ -20,7 +20,7 @@ def transform(x_original):
     global b
     global gamma
     global mDim
-    Xtrans=np.dot(gamma*x_original,np.reshape(w1, (400, mDim)))
+    Xtrans=gamma*np.dot(x_original,np.reshape(w1, (400, mDim)))
     Xtrans = (np.sqrt(2.0) / np.sqrt(mDim))*np.concatenate((np.cos(Xtrans+np.reshape(b, (1, mDim))),np.cos(-Xtrans+np.reshape(b, (1, mDim)))),axis = 1)
     return Xtrans
 
