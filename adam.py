@@ -34,11 +34,11 @@ def mapper(key, value):
     #start = time.clock()
     # key: None
     # value: one line of input file
-    weights = np.zeros([mDim], dtype='float') #maybe adjust this
-    m = np.zeros([mDim], dtype='float')
-    v = np.zeros([mDim], dtype='float')
-    m_hat = np.zeros([mDim], dtype='float')
-    v_hat = np.zeros([mDim], dtype='float')
+    weights = np.zeros([2*mDim], dtype='float') #maybe adjust this
+    m = np.zeros([2*mDim], dtype='float')
+    v = np.zeros([2*mDim], dtype='float')
+    m_hat = np.zeros([2*mDim], dtype='float')
+    v_hat = np.zeros([2*mDim], dtype='float')
     counter = 0.0
     #print('Mapping...')
     #start = time.clock()
