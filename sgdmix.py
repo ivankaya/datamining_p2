@@ -17,10 +17,14 @@ k = 10
 gamma = 8.75
 #eta = 0.001
 def transform(x_original):
-    global w1
-    global b
     global gamma
-    global mDim
+    global m
+    global n
+    intt = int(m/2)
+    np.random.seed(500)
+    b = np.random.uniform(low=0.0, high=2*np.pi, size=intt)
+    np.random.seed(500+intt)
+    w = np.random.normal(loc=0.0, scale=1.0, size=n*intt)
     Xtrans=gamma*np.dot(x_original,np.reshape(w1, (400, mDim)))
     Xtrans = 0.25*(np.concatenate((np.cos(Xtrans+np.reshape(b, (1, mDim))),np.cos(-Xtrans+np.reshape(b, (1, mDim)))),axis = 1)+1)
     Xtrans = np.concatenate((x_original,Xtrans),axis =1)
