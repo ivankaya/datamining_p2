@@ -3,7 +3,7 @@ import numpy as np
 
 #Parameters that can be tuned:
 mDim=400#number of dimensions in data
-gamma = 9.25 #the sqrt of the regular gamma of regular rbf
+gamma = 30 #the sqrt of the regular gamma of regular rbf
 epsilon = 0.000001 #small tweak number
 lam = 1.0 #parameter to tune the power within each iteration in mapper
 kk = 2 #number of iterations for convergence
@@ -34,11 +34,11 @@ def mapper(key, value):
     #start = time.clock()
     # key: None
     # value: one line of input file
-    weights = np.zeros([mDim], dtype='float') #maybe adjust this
-    m = np.zeros([mDim], dtype='float')
-    v = np.zeros([mDim], dtype='float')
-    m_hat = np.zeros([mDim], dtype='float')
-    v_hat = np.zeros([mDim], dtype='float')
+    weights = np.zeros([2*mDim], dtype='float') #maybe adjust this
+    m = np.zeros([2*mDim], dtype='float')
+    v = np.zeros([2*mDim], dtype='float')
+    m_hat = np.zeros([2*mDim], dtype='float')
+    v_hat = np.zeros([2*mDim], dtype='float')
     counter = 0.0
     #print('Mapping...')
     #start = time.clock()
@@ -55,12 +55,12 @@ def mapper(key, value):
     #values = np.random.permutation(values)
     
     y = dat[:, 0]
-    kaki = dat[:, 1:]
+    #kaki = dat[:, 1:]
     #print('Time elapsed for mapper: ', time.clock()-start)   	
     #print labels[0:10]
     #print features[0, 0:10]
     #print('Transforming...')
-    x = transform(kaki)
+    x = transform(dat[:, 1:])
     #print x[0, 0:10]
     for j in range(kk):
         randindex = np.random.permutation(np.shape(x)[0])
@@ -68,13 +68,13 @@ def mapper(key, value):
             counter = counter + 1.0
             rand = randindex[i]
             #print(np.shape(x[rand]))
-            L = np.dot(weights,x[rand])
+            L = np.dot(weights,x[rand,:])
             if (y[rand]*L <=0):
-                m = beta_1 * m - (1.0 - beta_1)*y[rand]*x[rand]
-                v = beta_2 * v + (1.0 - beta_2)*(np.multiply(x[rand],x[rand]))
+                m = beta_1 * m - (1.0 - beta_1)*y[rand]*x[rand,:]
+                v = beta_2 * v + (1.0 - beta_2)*(np.multiply(x[rand,:],x[rand,:]))
             elif (y[rand]*L > 0) and (y[rand]*L < 1):
-                m = beta_1 * m - (1.0 - beta_1)*y[rand]*(1-L)*x[rand]
-                v = beta_2 * v + (1.0 - beta_2)*(1-L)*(1-L)*(np.multiply(x[rand],x[rand]))
+                m = beta_1 * m - (1.0 - beta_1)*y[rand]*(1-L)*x[rand,:]
+                v = beta_2 * v + (1.0 - beta_2)*(1-L)*(1-L)*(np.multiply(x[rand,:],x[rand,:]))
             else:
                 m = beta_1 * m
                 v = beta_2 * v
