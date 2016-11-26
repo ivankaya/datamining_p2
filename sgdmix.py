@@ -25,8 +25,8 @@ def transform(x_original):
     b = np.random.uniform(low=0.0, high=2*np.pi, size=intt)
     np.random.seed(500+intt)
     w = np.random.normal(loc=0.0, scale=1.0, size=n*intt)
-    Xtrans=gamma*np.dot(x_original,np.reshape(w1, (400, mDim)))
-    Xtrans = 0.25*(np.concatenate((np.cos(Xtrans+np.reshape(b, (1, mDim))),np.cos(-Xtrans+np.reshape(b, (1, mDim)))),axis = 1)+1)
+    Xtrans=gamma*np.dot(x_original,np.reshape(w, (400, intt)))
+    Xtrans = 0.25*(np.concatenate((np.cos(Xtrans+np.reshape(b, (1, intt))),np.cos(-Xtrans+np.reshape(b, (1, intt)))),axis = 1)+1)
     Xtrans = np.concatenate((x_original,Xtrans),axis =1)
     return Xtrans
 
